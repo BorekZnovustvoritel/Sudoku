@@ -15,7 +15,7 @@ void showConsoleCursor(bool showFlag) //funkce z navodu, spousti se s parametrem
     SetConsoleCursorInfo(out, &cursorInfo);
 }
 
-int loadMatrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty a addr je nazev souboru
+int loadMatrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr, int* ptr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty a addr je nazev souboru
 {
     char chr;
     errno_t err;
@@ -44,6 +44,7 @@ int loadMatrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr) //Nahraje hra
                     if (i == 18) //bereme jen 162 symbolu. i se prepne pri poslednim symbolu na hodnotu 18, j na nulu
                     {
                         err = 0; //jen pokud se zaplni obe matice, chceme pokracovat
+                        *ptr = 1;
                         break;
                     }
                 }

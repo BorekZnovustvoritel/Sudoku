@@ -11,13 +11,14 @@ int main()
     char Omatrix[9][9], Gmatrix[9][9]; //Omatrix - original, udava, ktere hodnoty nelze zmenit, Gmatrix - herni, obsahuje vsechny hodnoty
 
     showConsoleCursor(FALSE);
-    char row[5] = { '>',' ',' ',' ',' ' }; //vychozi oznaceny radek v menu je prvni (index 0)
-    unsigned int rownum = 0; //drzi index oznaceneho radku v menu
-    printMenu(row, rownum);
+    int canContinue = 0; //drzi binarni hodnotu, ktera rika, jestli ma program v pameti nejakou rozehranou hru, tuto hodnotu zmeni na kladnou hodnotu otevreni hry, dohrani hry ji zmeni na nulu. Vytvareni layoutu ji zmeni na nulu vzdy
+    char row[6] = { ' ', ' ','>',' ',' ',' ' }; //vychozi oznaceny radek v menu je prvni (index 0)
+    unsigned int rownum = 2; //drzi index oznaceneho radku v menu
+    printMenu(row, rownum, canContinue);
     
     int leave = 0; //preruseni cyklu, zmeni se pry vyberu radku Exit v menu
     unsigned int key; //drzi int hodnotu stisknute klavesy
-    int status;
+    int status; //podarilo se hraci pole uspesne nacist? 0 = ano, -1 = spatny format, jine hodnoty = error
     while (!leave)
     {
         key = getch();
@@ -34,7 +35,7 @@ int main()
             switch (key) //jakou klavesu uzivatel zmackl? Zajimaji nas jen nektere
             {
             case 72: //up
-                if (rownum != 0)
+                if (rownum != (2 - 2*canContinue)) //pokud jsme nahore, nemuzeme vyse, canContinue vyjadruje herni matici v¨pameti
                 {
                     row[rownum - 1] = row[rownum];
                     row[rownum] = ' ';
@@ -42,7 +43,7 @@ int main()
                 }
                 break;
             case 80: //down
-                if (rownum != 4)
+                if (rownum != 5)
                 {
                     row[rownum + 1] = row[rownum];
                     row[rownum] = ' ';
@@ -52,11 +53,42 @@ int main()
             case 13: //enter
                 switch (rownum) //####### tento switch ovlada hlavni menu #######
                 {
-                case 0: //Start a new game
-                    system("cls");
-                    if (loadMatrix(Omatrix, Gmatrix, addr) == 0)
+
+
+                case 0: //continue
+                    play(Omatrix, Gmatrix, 1, &canContinue);
+
+                    if (canContinue == 0) //pokud hru dokoncime, musime presunout kurzor hlavniho menu, jinak by zmizel
                     {
-                        play(Omatrix, Gmatrix, 1);
+                        row[0] = ' ';
+                        row[2] = '>';
+                        rownum = 2;
+                    }
+                    break;
+
+
+                case 1: //Save the current game
+                    system("cls");
+                    char name2[21];
+                    if (canContinue == 0)
+                    {
+                        printf("There is no initiated game available.\nPress any key to continue.");
+                        getch();
+                    }
+                    else
+                    {
+                        printf("Please, enter a name of this session. Maximal length is 20 symbols.\n");
+                        scanf_s("%s", name2, sizeof(name2));
+                        savematrix(Omatrix, Gmatrix, name2);
+                    }
+                    break;
+
+
+                case 2: //Start a new game
+                    system("cls");
+                    if (loadMatrix(Omatrix, Gmatrix, addr, &canContinue) == 0)
+                    {
+                        play(Omatrix, Gmatrix, 1, &canContinue);
                     }
                     else
                     {
@@ -67,16 +99,16 @@ int main()
                     break;
 
 
-                case 1: //Load a saved game
+                case 3: //Load a saved game
                     system("cls");
                     char name1[21];
                     printf("Enter the name of the save file:\n");
                     showConsoleCursor(TRUE);
                     scanf_s("%s", name1, sizeof(name1));
-                    status = loadMatrix(Omatrix, Gmatrix, name1);
+                    status = loadMatrix(Omatrix, Gmatrix, name1, &canContinue);
                     if (status == 0)
                     {
-                        play(Omatrix, Gmatrix, 1);
+                        play(Omatrix, Gmatrix, 1, &canContinue);
                     }
                     else if (status == -1)
                     {
@@ -92,16 +124,7 @@ int main()
                     break;
 
 
-                case 2: //Save the current game
-                    system("cls");
-                    char name2[21];
-                    printf("Please, enter a name of this session. Maximal length is 20 symbols.\n");
-                    scanf_s("%s", name2, sizeof(name2));
-                    savematrix(Omatrix, Gmatrix, name2);
-                    break;
-
-
-                case 3: //Create a new layout
+                case 4: //Create a new layout
                     char nulMatrix[9][9];
                     for (int m = 0; m < 9; m++)
                     {
@@ -111,17 +134,24 @@ int main()
                             Gmatrix[m][n] = '0';
                         }
                     }
-                    play(nulMatrix, Gmatrix, 2);
-
+                    play(nulMatrix, Gmatrix, 2, &canContinue);
+                    canContinue = 0;
+                    for (int m = 0; m < 9; m++)
+                    {
+                        for (int n = 0; n < 9; n++)
+                        {
+                            Gmatrix[m][n] = '0';                           
+                        }
+                    }
                     break;
 
 
-                case 4: //Exit
+                case 5: //Exit
                     leave = 1;
                     break;
                 }
             }
         }
-        printMenu(row, rownum);
+        printMenu(row, rownum, canContinue);
     }
 }

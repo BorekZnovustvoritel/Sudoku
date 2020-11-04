@@ -155,14 +155,18 @@ void checkAndPrintMatrix(char Omatrix[9][9], char Gmatrix[9][9], int Ematrix[9][
     setCursorPosition(nActual * 2 + 2, mActual + 1);
 }
 
-void printMenu(char row[5], unsigned int rownum) //zobrazi hlavni menu podle parametru. row[] obsahuje kurzor ukazujici aktivni radek, rownum obsahuje cislo radku (zacinajici od nuly)
+void printMenu(char* row, unsigned int rownum, int canContinue) //zobrazi hlavni menu podle parametru. row[] obsahuje kurzor ukazujici aktivni radek, rownum obsahuje cislo radku (zacinajici od nuly)
 {
     system("cls");
     printf("\n\tSUDOKU\n\n");
-    printf("\t%c Start a new game\n\t%c Load a saved game\n\t%c Save the current game\n\t%c Create a new layout\n\t%c Exit", row[0], row[1], row[2], row[3], row[4]);
+    if (canContinue == 1)
+    {
+        printf("\t%c Continue\n\t%c Save the current game\n", row[0], row[1]);
+    }
+    printf("\t%c Start a new game\n\t%c Load a saved game\n\t%c Create a new layout\n\t%c Exit", row[2], row[3], row[4], row[5]);
 }
 
-void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
+void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
 {
     int mActual = 0, nActual = 0; //ulozeni souradnic aktualniho prvku pro pouziti ve funkcich
     int Ematrix[9][9]; //Ematrix -E jako error, uklada chybne radky, sloupce a podmatice podle pravidel hry. Ty se pak podbarvuji cervene
@@ -223,6 +227,7 @@ void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode) //Herni mechanis
     }
     if (getvictory(Gmatrix, Ematrix) == 1)
     {
+        *ptr = 0;
         system("cls");
         printMatrix(Omatrix, Gmatrix, Ematrix);
         showConsoleCursor(FALSE);
@@ -232,8 +237,10 @@ void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode) //Herni mechanis
     else
     {
         showConsoleCursor(FALSE); //co se ma stat, pokud je hra prerusena (automaticky hra vstoupi do menu)
+
         if (gamemode == 2) //pokud je zavolana v rezimu vytvareni layoutu
         {
+            *ptr = 0;
             int checkerr = 0; //obsahuje layout chyby?
             for (int m = 0; m < 9; m++)
             {
