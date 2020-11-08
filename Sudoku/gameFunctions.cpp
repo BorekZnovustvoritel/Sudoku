@@ -5,7 +5,7 @@
 #include "otherFunctions.h"
 
 //vypise Gmatrix, hodnoty shodne s Omatrix vybarvi zelene, hodnoty oznacene jako chybne (v Ematrix) podbarvi cervene, cast je prevzata z navodoveho souboru
-void printMatrix(char Omatrix[9][9], char Gmatrix[9][9], int Ematrix[9][9])
+void printMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9])
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -85,7 +85,7 @@ void setCursorPosition(int x, int y) //Nastaveni kurzoru v konzoli na pozici x =
     SetConsoleCursorPosition(hOut, coord);
 }
 
-void printPoint(char Gmatrix[9][9], int* mActual, int* nActual) //funkce, ktera je hlavne volana v dalsi funkci, hlavni funkce je pocitani pozice kurzoru pro predchozi funkci
+void printPoint(chmat Gmatrix, int* mActual, int* nActual) //funkce, ktera je hlavne volana v dalsi funkci, hlavni funkce je pocitani pozice kurzoru pro predchozi funkci
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -100,7 +100,7 @@ void printPoint(char Gmatrix[9][9], int* mActual, int* nActual) //funkce, ktera 
     SetConsoleTextAttribute(hConsole, saved_attributes);
 }
 
-void moveNumber(char Gmatrix[9][9], char d, int* mActual, int* nActual) //funkce pro pohyb v hracim poli
+void moveNumber(chmat Gmatrix, char d, int* mActual, int* nActual) //funkce pro pohyb v hracim poli
 {
     if (d == 'u' && *mActual - 1 >= 0) {
         (*mActual)--;
@@ -123,7 +123,7 @@ void moveNumber(char Gmatrix[9][9], char d, int* mActual, int* nActual) //funkce
     }
 }
 
-int getvictory(char Gmatrix[9][9], int Ematrix[9][9]) //pokud jsou vyplnene vsechny hodnoty hracske matice a neobsahuje zadne chyby, vrati funkce hodnotu 1
+int getvictory(chmat Gmatrix, int Ematrix[9][9]) //pokud jsou vyplnene vsechny hodnoty hracske matice a neobsahuje zadne chyby, vrati funkce hodnotu 1
 {
     int r = 1;
     for (int m = 0; m < 9; m++)
@@ -139,7 +139,7 @@ int getvictory(char Gmatrix[9][9], int Ematrix[9][9]) //pokud jsou vyplnene vsec
     return r;
 }
 
-void checkAndPrintMatrix(char Omatrix[9][9], char Gmatrix[9][9], int Ematrix[9][9], int mActual, int nActual) //vola checkcolumn(), checkrow() a checkgrid() a printMatrix(), pokud bych nepouzil tuto funkci, cast kodu by se opakovala
+void checkAndPrintMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9], int mActual, int nActual) //vola checkcolumn(), checkrow() a checkgrid() a printMatrix(), pokud bych nepouzil tuto funkci, cast kodu by se opakovala
 {
     system("cls");
     checkcolumn(Gmatrix, Ematrix); //musi byt prvni, je v nem i reset matice erroru
@@ -166,7 +166,7 @@ void printMenu(char* row, unsigned int rownum, int canContinue) //zobrazi hlavni
     printf("\t%c Start a new game\n\t%c Load a saved game\n\t%c Create a new layout\n\t%c Exit", row[2], row[3], row[4], row[5]);
 }
 
-int play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
+int play(chmat Omatrix, chmat Gmatrix, int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
 {
     int mActual = 0, nActual = 0; //ulozeni souradnic aktualniho prvku pro pouziti ve funkcich
     int Ematrix[9][9]; //Ematrix -E jako error, uklada chybne radky, sloupce a podmatice podle pravidel hry. Ty se pak podbarvuji cervene

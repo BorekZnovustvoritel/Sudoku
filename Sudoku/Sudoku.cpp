@@ -6,14 +6,14 @@
 #include "gameFunctions.h"
 #include "otherFunctions.h"
 
-#define NAMELENGTH 20
+typedef char chmat[9][9];
 
 int main()
 {
-    char addr[35], name[21]; //celkova adresa pro ukladani / cast, kterou zadava uzivatel
-    char folderaddr[] = "Playgrounds\\"; //defaultni adresar pro ukladani her
+    char addr[NAMELENGTH + 15], name[NAMELENGTH + 1]; //celkova adresa pro ukladani / cast, kterou zadava uzivatel
+    char folderaddr[14] = "Playgrounds\\"; //defaultni adresar pro ukladani her
     char addr2[] = "Playgrounds\\000.txt"; //defaultni soubor
-    char Omatrix[9][9], Gmatrix[9][9]; //Omatrix - original, udava, ktere hodnoty nelze zmenit, Gmatrix - herni, obsahuje vsechny hodnoty
+    chmat Omatrix, Gmatrix; //Omatrix - original, udava, ktere hodnoty nelze zmenit, Gmatrix - herni, obsahuje vsechny hodnoty
 
     showConsoleCursor(FALSE);
     int canContinue = 0; //drzi binarni hodnotu, ktera rika, jestli ma program v pameti nejakou rozehranou hru, tuto hodnotu zmeni na kladnou hodnotu otevreni hry, dohrani hry ji zmeni na nulu. Vytvareni layoutu ji zmeni na nulu vzdy

@@ -15,7 +15,7 @@ void showConsoleCursor(bool showFlag) //funkce z navodu, spousti se s parametrem
     SetConsoleCursorInfo(out, &cursorInfo);
 }
 
-int loadMatrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr, int* ptr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty a addr je nazev souboru
+int loadMatrix(chmat Omatrix, chmat Gmatrix, char* addr, int* ptr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty a addr je nazev souboru
 {
     char chr;
     errno_t err;
@@ -59,7 +59,7 @@ int loadMatrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr, int* ptr) //N
     return err;
 }
 
-int savematrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr) //ulozi obe matice (pevnou i hracskou) do souboru s nazvem nahranym v promenne addr
+int savematrix(chmat Omatrix, chmat Gmatrix, char* addr) //ulozi obe matice (pevnou i hracskou) do souboru s nazvem nahranym v promenne addr
 {
     errno_t err;
     FILE* outputFile;
@@ -86,7 +86,7 @@ int savematrix(char Omatrix[9][9], char Gmatrix[9][9], char* addr) //ulozi obe m
     return err;
 }
 
-void checkcolumn(char Gmatrix[9][9], int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot ve sloupci
+void checkcolumn(chmat Gmatrix, int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot ve sloupci
 {
     for (int i = 0; i < 9; i++) //vynulovani matice po minulem tahu
     {
@@ -113,7 +113,7 @@ void checkcolumn(char Gmatrix[9][9], int Ematrix[9][9]) //funkce pro overovani s
     }
 }
 
-void checkrow(char Gmatrix[9][9], int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot v radku
+void checkrow(chmat Gmatrix, int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot v radku
 {
     for (int m = 0; m < 9; m++)
     {
@@ -133,7 +133,7 @@ void checkrow(char Gmatrix[9][9], int Ematrix[9][9]) //funkce pro overovani spra
     }
 }
 
-void checkgrid(char Gmatrix[9][9], int Ematrix[9][9], int gridrow, int gridcolumn) //funkce pro overovani spravnosti vsech hodnot v podmatici 3x3, gridrow a gridcolumn jsou promenne oznacujici souradnice prvni hodnoty podmatice v hlavni matici
+void checkgrid(chmat Gmatrix, int Ematrix[9][9], int gridrow, int gridcolumn) //funkce pro overovani spravnosti vsech hodnot v podmatici 3x3, gridrow a gridcolumn jsou promenne oznacujici souradnice prvni hodnoty podmatice v hlavni matici
 { //gridrow a gridcolumn jsou v kodu volany pomoci vnoreneho cyklu for, projde tedy vsech 9 podmatic
     char grid[9]; //jednorozmerne pole je lehci na pruchodnost nez dvourozmerne, nahrajeme do nej hodnoty z podmatice
     int a = 0;
