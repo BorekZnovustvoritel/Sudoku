@@ -178,3 +178,10 @@ int shouldBeColoured(int i, int j)
         return 0;
     }
 }
+
+char* mergeaddr(char* folderaddr, char* addr, char* ans)
+{
+    strcpy_s(ans, 35, folderaddr);
+    strcat_s(ans, 35, addr);
+    return ans;
+}

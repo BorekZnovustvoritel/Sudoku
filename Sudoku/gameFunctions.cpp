@@ -166,7 +166,7 @@ void printMenu(char* row, unsigned int rownum, int canContinue) //zobrazi hlavni
     printf("\t%c Start a new game\n\t%c Load a saved game\n\t%c Create a new layout\n\t%c Exit", row[2], row[3], row[4], row[5]);
 }
 
-void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
+int play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
 {
     int mActual = 0, nActual = 0; //ulozeni souradnic aktualniho prvku pro pouziti ve funkcich
     int Ematrix[9][9]; //Ematrix -E jako error, uklada chybne radky, sloupce a podmatice podle pravidel hry. Ty se pak podbarvuji cervene
@@ -260,14 +260,9 @@ void play(char Omatrix[9][9], char Gmatrix[9][9], int gamemode, int* ptr) //Hern
             }
             else //neobsahuje chyby.
             {
-                system("cls");
-                showConsoleCursor(TRUE);
-                char name[21];
-                printf("Please, name this layout. Maximal length is 20 symbols.\n");
-                scanf_s("%s", name, sizeof(name));
-                savematrix(Gmatrix, Gmatrix, name); //uklada do obou matic to, co bylo zadano jako layout. Timto se z hodnot stanou nemenna cisla
-                showConsoleCursor(FALSE);
+                return 1;
             }
         }
     }
+    return 0;
 }

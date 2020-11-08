@@ -2,12 +2,17 @@
 #include <errno.h>
 #include <windows.h>
 #include <conio.h>
+#include <string.h>
 #include "gameFunctions.h"
 #include "otherFunctions.h"
 
+#define NAMELENGTH 20
+
 int main()
 {
-    char addr[8] = "000.txt"; //defaultni soubor pri spusteni nove hry
+    char addr[35], name[21]; //celkova adresa pro ukladani / cast, kterou zadava uzivatel
+    char folderaddr[] = "Playgrounds\\"; //defaultni adresar pro ukladani her
+    char addr2[] = "Playgrounds\\000.txt"; //defaultni soubor
     char Omatrix[9][9], Gmatrix[9][9]; //Omatrix - original, udava, ktere hodnoty nelze zmenit, Gmatrix - herni, obsahuje vsechny hodnoty
 
     showConsoleCursor(FALSE);
@@ -69,7 +74,7 @@ int main()
 
                 case 1: //Save the current game
                     system("cls");
-                    char name2[21];
+                    
                     if (canContinue == 0)
                     {
                         printf("There is no initiated game available.\nPress any key to continue.");
@@ -78,21 +83,22 @@ int main()
                     else
                     {
                         printf("Please, enter a name of this session. Maximal length is 20 symbols.\n");
-                        scanf_s("%s", name2, sizeof(name2));
-                        savematrix(Omatrix, Gmatrix, name2);
+                        scanf_s("%s", &name, NAMELENGTH);
+                        mergeaddr(folderaddr, name, addr);
+                        savematrix(Omatrix, Gmatrix, addr);
                     }
                     break;
 
 
                 case 2: //Start a new game
                     system("cls");
-                    if (loadMatrix(Omatrix, Gmatrix, addr, &canContinue) == 0)
+                    if (loadMatrix(Omatrix, Gmatrix, addr2, &canContinue) == 0)
                     {
                         play(Omatrix, Gmatrix, 1, &canContinue);
                     }
                     else
                     {
-                        printf("Please copy the thext file named '%s' into the game folder.\nPress any key to continue.", addr);
+                        printf("Please copy the thext file named '%s' into the 'Playgrounds' folder.\nPress any key to continue.", addr);
                         getch();
                         showConsoleCursor(FALSE);
                     }
@@ -101,23 +107,23 @@ int main()
 
                 case 3: //Load a saved game
                     system("cls");
-                    char name1[21];
                     printf("Enter the name of the save file:\n");
                     showConsoleCursor(TRUE);
-                    scanf_s("%s", name1, sizeof(name1));
-                    status = loadMatrix(Omatrix, Gmatrix, name1, &canContinue);
+                    scanf_s("%s", &name, NAMELENGTH);
+                    mergeaddr(folderaddr, name, addr);
+                    status = loadMatrix(Omatrix, Gmatrix, addr, &canContinue);
                     if (status == 0)
                     {
                         play(Omatrix, Gmatrix, 1, &canContinue);
                     }
                     else if (status == -1)
                     {
-                        printf("\nThe file '%s' is not formatted properly.\nPlease read the user's manual.\nPress any key to continue.", name1);
+                        printf("\nThe file '%s' is not formatted properly.\nPlease read the user's manual.\nPress any key to continue.", name);
                         getch();
                     }
                     else
                     {
-                        printf("\nThe file '%s' was not found.\nPress any key to continue.", name1);
+                        printf("\nThe file '%s' was not found.\nPress any key to continue.", name);
                         getch();
                     }
                     showConsoleCursor(FALSE);
@@ -134,8 +140,16 @@ int main()
                             Gmatrix[m][n] = '0';
                         }
                     }
-                    play(nulMatrix, Gmatrix, 2, &canContinue);
-                    canContinue = 0;
+                    if(play(nulMatrix, Gmatrix, 2, &canContinue) == 1)
+                    {
+                        system("cls");
+                        showConsoleCursor(TRUE);
+                        printf("Please, name this layout. Maximal length is 20 symbols.\n");
+                        scanf_s("%s", &name, NAMELENGTH);
+                        mergeaddr(folderaddr, name, addr);
+                        savematrix(Gmatrix, Gmatrix, addr); //uklada do obou matic to, co bylo zadano jako layout. Timto se z hodnot stanou nemenna cisla
+                        showConsoleCursor(FALSE);
+                    }
                     for (int m = 0; m < 9; m++)
                     {
                         for (int n = 0; n < 9; n++)

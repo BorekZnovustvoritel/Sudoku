@@ -9,3 +9,4 @@ void checkrow(char Gmatrix[9][9], int Ematrix[9][9]); //Oznacuje do Ematrix (mat
 void checkcolumn(char Gmatrix[9][9], int Ematrix[9][9]); //Oznacuje do Ematrix spatne sloupce
 void checkgrid(char Gmatrix[9][9], int Ematrix[9][9], int gridrow, int gridcolumn); //Oznacuje do Ematrix spatne vyplneno podmatice. gridrow a gridcolumn oznacuji pocatecni pozici teto podmatice v hlavni matici
 int shouldBeColoured(int i, int j);
+char* mergeaddr(char* folderaddr, char* addr, char* ans);
