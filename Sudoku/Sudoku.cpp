@@ -83,7 +83,9 @@ int main()
                     else
                     {
                         printf("Please, enter a name of this session. Maximal length is 20 symbols.\n");
+                        showConsoleCursor(TRUE);
                         scanf_s("%s", &name, NAMELENGTH);
+                        showConsoleCursor(FALSE);
                         mergeaddr(folderaddr, name, addr);
                         savematrix(Omatrix, Gmatrix, addr);
                     }
@@ -116,7 +118,7 @@ int main()
                     {
                         play(Omatrix, Gmatrix, 1, &canContinue);
                     }
-                    else if (status == -1)
+                    else if (status == 1)
                     {
                         printf("\nThe file '%s' is not formatted properly.\nPlease read the user's manual.\nPress any key to continue.", name);
                         getch();
