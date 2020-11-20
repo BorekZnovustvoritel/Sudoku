@@ -14,7 +14,7 @@ možnosti oznaèené hvìzdièkou * se zobrazí, jen pokud existuje rozehraná hra):
     Uloží rozehranou hru. Hry se ukládají pøes hlavní menu, z rozehrané hry se
     do menu dostanete stiskem klávesy escape. Po vybrání této možnosti bude
     program chtít, abyste zadali jméno uložené hry. Název volte libovolný,
-    vyvarujte se však ukládání her pod názvy '000.txt', '001.txt' a '002.txt',
+    vyvarujte se však ukládání her pod názvy '001.txt', '002.txt' a '003.txt',
     jinak by došlo ke smazání pùvodních souborù. Po zadání názvu se vytvoøí
     v adresáøi soubor s Vámi vybraným jménem. Tento soubor obsahuje Vámi
     uloženou hru. Soubor se nesmaže ani po ukonèení programu.
@@ -24,17 +24,11 @@ možnosti oznaèené hvìzdièkou * se zobrazí, jen pokud existuje rozehraná hra):
     000.txt. Hru lze kdykoli úøerušit a uložit výše zmínìným postupem.
 
 2) Load a saved game
-    Pokud zvolíte tuto možnost, budete dotázáni, abyste zadali jméno uložené
-    hry, kterou chcete naèíst. Pokud nemáte vlastní rozehranou hru, kterou byste
-    chtìli vyzkoušet naèíst, v adresáøi jsou umístìné 3 soubory:
-        001.txt
-        002.txt
-        003.txt
-    Po zadání jednoho z tìchto dvou názvù (vèetnì pøípony) se zobrazí hrací
-    pole. I tuto hru je možno pøerušit a uložit.
-    Pomocí této možnosti se taktéž otevírají soubory s hracím polem definovaným
-    uživatelem. Je potøeba toto hrací pole jen umístit do adresáøe tohoto
-    programu a správnì zadat název souboru, ve kterém se hrací pole nachází.
+    Po zvolení této možnosti se zobrazí možnosti na spuštìní hry manuálním
+    zadáním jejího názvu, nebo využít jednu z posledních uložených her. Pokud
+    byste omylem zavøeli aplikaci, kde jste mìli rozehranou hru, bude uložená
+    pod názvem Last exit-game cache. Žádná data tedy nebudou ztracena. Hry lze
+    naèítat pouze z adresáøe Playgrounds.
 
 3) Create a new layout
     Tato možnost Vám umožní pøímo v konzoli vytváøet nové hrací pole. Pokud jste

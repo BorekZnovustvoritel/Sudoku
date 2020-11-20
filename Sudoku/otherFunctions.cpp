@@ -179,7 +179,7 @@ void checkgrid(chmat Gmatrix, int Ematrix[9][9], int gridrow, int gridcolumn) //
     }
 }
 
-int shouldBeColoured(int i, int j)
+int shouldBeColoured(int i, int j) //Oznacuje souradnice, ktere maji mit sachovnicove podbarveni. Vraci 1, pokud jsou souradnice urceny k podbarveni
 {
     if (((i - 1 >= -1 && i - 1 <= 1) && (j - 1 >= -1 && j - 1 <= 1)) ||
         ((i - 1 >= -1 && i - 1 <= 1) && (j - 7 >= -1 && j - 7 <= 1)) ||
@@ -195,9 +195,102 @@ int shouldBeColoured(int i, int j)
     }
 }
 
-char* mergeaddr(char* folderaddr, char* addr, char* ans)
+char* mergeaddr(const char* folderaddr, char* addr, char* ans) //spoji nazev souboru s adresarem, az pote se s adresou pracuje
 {
-    strcpy_s(ans, 35, folderaddr);
-    strcat_s(ans, 35, addr);
+    strcpy_s(ans, NAMELENGTH + 15, folderaddr);
+    strcat_s(ans, NAMELENGTH + 15, addr);
     return ans;
+}
+
+int getQuickLoadMenuData(char names[NAMENUM][NAMELENGTH + 1]) //Otevre a extrahuje ulozena data ze souboru DATA\DATA
+{
+    int numOfNames = 0;
+    FILE* data;
+    if (!fopen_s(&data, "DATA\\DATA", "r"))
+    {
+        char chr;
+        int i = 0;
+        while ((chr = getc(data)) != EOF && numOfNames < NAMENUM)
+        {
+            if (chr != '\n')
+            {
+                names[numOfNames][i] = chr;
+                i++;
+            }
+            else
+            {
+                names[numOfNames][i] = '\0';
+                numOfNames++;
+                i = 0;
+            }
+        }
+        fclose(data);
+        int emptyNames = NAMENUM - numOfNames; //pokud v souboru neni dost souboru k zobrazeni, nazev se vyplni prazdnym retezcem
+        for (int i = 0; i < emptyNames; i++)
+        {
+            names[NAMENUM - 1 - i][0] = '\0';
+        }
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+int loadGameMenu(char names[NAMENUM][NAMELENGTH + 1]) //Zobrazuje menu, ktere se zobrazi po otevreni moznosti Load a saved game
+{
+    char row[NAMENUM + 1];
+    row[0] = '>';
+    for (int i = 1; i < (NAMENUM + 1); i++)
+    {
+        row[i] = ' ';
+    }
+    int leave = 0;
+    char key;
+    int option = 0;
+    while (!leave)
+    {
+        system("cls");
+        printf("\n\tLoad a saved game\n");
+        printf("\t%c Manually insert name\n", row[0]); 
+        for (int i = 1; i < (NAMENUM + 1); i++)
+        {
+            printf("\t%c %s\n", row[i], names[i-1]);
+        }
+        key = getch();
+        if (key == 0 || key == 0xE0) //zbaveni se prazdnych inputu
+        {
+            key = getch();
+        }
+        else
+        {
+            switch (key)
+            {
+                case 72: //up
+                    if (option != 0)
+                    {
+                        row[option] = ' ';
+                        option -= 1;
+                        row[option] = '>';
+                    }
+                    break;
+                case 80: //down
+                    if (option != NAMENUM)
+                    {
+                        row[option] = ' ';
+                        option += 1;
+                        row[option] = '>';
+                    }
+                    break;
+                case 13: //enter                 
+                    leave = 1;
+                    break;
+                case 27: //esc
+                    return -1;
+                    break;
+            }
+        }
+    }
+    return option;
 }
