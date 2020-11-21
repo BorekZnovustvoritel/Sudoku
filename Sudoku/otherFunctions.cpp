@@ -102,55 +102,82 @@ int savematrix(chmat Omatrix, chmat Gmatrix, char* addr) //ulozi obe matice (pev
     return err;
 }
 
-void checkcolumn(chmat Gmatrix, int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot ve sloupci
+int checkarr(char arr[9]) //pruchod devitice znaku
 {
-    for (int i = 0; i < 9; i++) //vynulovani matice po minulem tahu
+    for (int m = 0; m < 8; m++)
+    {
+        for (int i = m + 1; i < 9; i++)
+        {
+            if (arr[i] == arr[m] && arr[i] != '0') //pokud obsahuje 2 stejne nenulove hodnoty, je to chybny sloupec
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void flushMatrix(int Ematrix[9][9])  //vynulovani matice po minulem tahu
+{
+    for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
         {
             Ematrix[i][j] = 0;
         }
     }
-    for (int n = 0; n < 9; n++)
+}
+
+void checkColumn(chmat Gmatrix, int Ematrix[9][9], int n) //funkce pro overovani spravnosti vsech hodnot ve sloupci
+{
+    char arr[9];
+    for (int m = 0; m < 9; m++)
     {
-        for (int m = 0; m < 8; m++)
+        arr[m] = Gmatrix[m][n];
+    }
+    if (checkarr(arr))
+    {
+        for (int m = 0; m < 9; m++)
         {
-            for (int i = m + 1; i < 9; i++)
-            {
-                if (Gmatrix[i][n] == Gmatrix[m][n] && Gmatrix[i][n] != '0') //pokud sloupec obsahuje 2 stejne nenulove hodnoty, je to chybny sloupec
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        Ematrix[j][n] = 1;
-                    }
-                }
-            }
+            Ematrix[m][n] = 1;
         }
     }
 }
 
-void checkrow(chmat Gmatrix, int Ematrix[9][9]) //funkce pro overovani spravnosti vsech hodnot v radku
+void checkcolumns(chmat Gmatrix, int Ematrix[9][9]) //volani checkColumn pro kazdy sloupec
+{
+    for (int n = 0; n < 9; n++)
+    {
+        checkColumn(Gmatrix, Ematrix, n);
+    }
+}
+
+void checkRow(chmat Gmatrix, int Ematrix[9][9], int m) //funkce pro overovani spravnosti vsech hodnot v radku
+{
+    char arr[9];
+    for (int n = 0; n < 9; n++)
+    {
+        arr[n] = Gmatrix[m][n];
+    }
+    if (checkarr(arr))
+    {
+        for (int n = 0; n < 9; n++)
+        {
+            Ematrix[m][n] = 1;
+        }
+    }
+}
+
+void checkrows(chmat Gmatrix, int Ematrix[9][9]) //volani checkRow pro kazdy radek
 {
     for (int m = 0; m < 9; m++)
     {
-        for (int n = 0; n < 8; n++)
-        {
-            for (int i = n + 1; i < 9; i++)
-            {
-                if (Gmatrix[m][i] == Gmatrix[m][n] && Gmatrix[m][i] != '0') //pokud sloupec obsahuje 2 stejne nenulove hodnoty, je to chybny radek
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        Ematrix[m][j] = 1;
-                    }
-                }
-            }
-        }
+        checkRow(Gmatrix, Ematrix, m);
     }
 }
 
-void checkgrid(chmat Gmatrix, int Ematrix[9][9], int gridrow, int gridcolumn) //funkce pro overovani spravnosti vsech hodnot v podmatici 3x3, gridrow a gridcolumn jsou promenne oznacujici souradnice prvni hodnoty podmatice v hlavni matici
-{ //gridrow a gridcolumn jsou v kodu volany pomoci vnoreneho cyklu for, projde tedy vsech 9 podmatic
+void checkGrid(chmat Gmatrix, int Ematrix[9][9], int gridrow, int gridcolumn) //funkce pro overovani spravnosti vsech hodnot v podmatici 3x3, gridrow a gridcolumn jsou promenne oznacujici souradnice prvni hodnoty podmatice v hlavni matici
+{ 
     char grid[9]; //jednorozmerne pole je lehci na pruchodnost nez dvourozmerne, nahrajeme do nej hodnoty z podmatice
     int a = 0;
     for (int m = gridrow; m < gridrow + 3; m++)
@@ -161,20 +188,25 @@ void checkgrid(chmat Gmatrix, int Ematrix[9][9], int gridrow, int gridcolumn) //
             ++a;
         }
     }
-    for (int i = 0; i < 8; i++) //pokud jsou mezi hodnotami 2 stejne nenulove, podmatice se oznaci jako chybna
+    if (checkarr(grid))
     {
-        for (int j = i + 1; j < 9; j++)
+        for (int m = gridrow; m < gridrow + 3; m++)
         {
-            if (grid[i] == grid[j] && grid[i] != '0')
+            for (int n = gridcolumn; n < gridcolumn + 3; n++)
             {
-                for (int m = gridrow; m < gridrow + 3; m++)
-                {
-                    for (int n = gridcolumn; n < gridcolumn + 3; n++)
-                    {
-                        Ematrix[m][n] = 1;
-                    }
-                }
+                Ematrix[m][n] = 1;
             }
+        }
+    }
+}
+
+void checkgrids(chmat Gmatrix, int Ematrix[9][9]) //volani chackgrid nad vsemi podmaticemi
+{
+    for (int callgridrow = 0; callgridrow < 7; callgridrow += 3)
+    {
+        for (int callgridcolumn = 0; callgridcolumn < 7; callgridcolumn += 3)
+        {
+            checkGrid(Gmatrix, Ematrix, callgridrow, callgridcolumn);
         }
     }
 }

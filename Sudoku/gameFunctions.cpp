@@ -139,18 +139,13 @@ int getvictory(chmat Gmatrix, int Ematrix[9][9]) //pokud jsou vyplnene vsechny h
     return r;
 }
 
-void checkAndPrintMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9], int mActual, int nActual) //vola checkcolumn(), checkrow() a checkgrid() a printMatrix(), pokud bych nepouzil tuto funkci, cast kodu by se opakovala
+void checkAndPrintMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9], int mActual, int nActual) //vola checkcolumns(), checkrows() a checkgrid() a printMatrix(), pokud bych nepouzil tuto funkci, cast kodu by se opakovala
 {
     system("cls");
-    checkcolumn(Gmatrix, Ematrix); //musi byt prvni, je v nem i reset matice erroru
-    checkrow(Gmatrix, Ematrix);
-    for (int callgridrow = 0; callgridrow < 7; callgridrow += 3)
-    {
-        for (int callgridcolumn = 0; callgridcolumn < 7; callgridcolumn += 3)
-        {
-            checkgrid(Gmatrix, Ematrix, callgridrow, callgridcolumn);
-        }
-    }
+    flushMatrix(Ematrix);
+    checkcolumns(Gmatrix, Ematrix);
+    checkrows(Gmatrix, Ematrix);
+    checkgrids(Gmatrix, Ematrix);
     printMatrix(Omatrix, Gmatrix, Ematrix);
     setCursorPosition(nActual * 2 + 2, mActual + 1);
 }
