@@ -89,9 +89,9 @@ int main()
                         showConsoleCursor(FALSE);
                         mergeaddr(folderaddr, name, addr);
                         savematrix(Omatrix, Gmatrix, addr);
-                        for (int i = 1; i < NAMENUM - 1; i++) //zkoumame, jestli jemno neni jiz obsazene, pokud je, soubor se sice prepie, ale seznam ulozenych her neobsahuje duplikaty
+                        for (int i = 1; i < NAMENUM; i++) //zkoumame, jestli jemno neni jiz obsazene, pokud je, soubor se sice prepise, ale seznam ulozenych her neobsahuje duplikaty
                         {
-                            if (!strcmp(name, names[i])) //pokud jsou jmena stejna
+                            if (strcmp(name, names[i]) == 0) //pokud jsou jmena stejna
                             {
                                 hasDupes = 1;
                             }
