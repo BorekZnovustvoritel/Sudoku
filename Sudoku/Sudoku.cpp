@@ -80,29 +80,42 @@ int main()
 
 
                 case 1: //Save the current game
-                    system("cls");
-                    printf("Please, enter a name of this session. Maximal length is %d symbols.\n", NAMELENGTH);
-                    showConsoleCursor(TRUE);
-                    scanf_s("%s", name, NAMELENGTH + 1);
-                    showConsoleCursor(FALSE);
-                    mergeaddr(folderaddr, name, addr);
-                    savematrix(Omatrix, Gmatrix, addr);                    
-                    for (int i = NAMENUM - 1; i > 1; i--) //posouvame ulozene nazvy o jeden dale
-                    {
-                        strcpy_s(names[i], NAMELENGTH + 1, names[i - 1]);
-                    }
-                    strcpy_s(names[1], NAMELENGTH + 1, name); //ulozime novy nazev na prvni pozici
-                    FILE* data;
-                    if (!fopen_s(&data, "DATA\\DATA", "w")) //zapiseme vse do souboru
-                    {
-                        for (int i = 0; i < NAMENUM; i++)
+                    { //tato zavorka je jen kvuli inicializaci promenne. Nesmi byt ve switch case
+                        int hasDupes = 0;
+                        system("cls");
+                        printf("Please, enter a name of this session. Maximal length is %d symbols.\n", NAMELENGTH);
+                        showConsoleCursor(TRUE);
+                        scanf_s("%s", name, NAMELENGTH + 1);
+                        showConsoleCursor(FALSE);
+                        mergeaddr(folderaddr, name, addr);
+                        savematrix(Omatrix, Gmatrix, addr);
+                        for (int i = 1; i < NAMENUM - 1; i++) //zkoumame, jestli jemno neni jiz obsazene, pokud je, soubor se sice prepie, ale seznam ulozenych her neobsahuje duplikaty
                         {
-                            fprintf(data, "%s\n", names[i]);
+                            if (!strcmp(name, names[i])) //pokud jsou jmena stejna
+                            {
+                                hasDupes = 1;
+                            }
                         }
-                        fclose(data);
-                    }
-                    break;
+                        if (!hasDupes)
+                        {
+                            for (int i = NAMENUM - 1; i > 1; i--) //posouvame ulozene nazvy o jeden dale
+                            {
+                                strcpy_s(names[i], NAMELENGTH + 1, names[i - 1]);
+                            }
+                            strcpy_s(names[1], NAMELENGTH + 1, name); //ulozime novy nazev na prvni pozici
+                        }
+                        FILE* data;
+                        if (!fopen_s(&data, "DATA\\DATA", "w")) //zapiseme vse do souboru
+                        {
+                            for (int i = 0; i < NAMENUM; i++)
+                            {
+                                fprintf(data, "%s\n", names[i]);
+                            }
+                            fclose(data);
+                        }
+                        break;
 
+                    }
 
                 case 2: //Start a new game
                     { //tato zavorka je jen kvuli inicializaci promenne. Nesmi byt ve switch case
