@@ -14,7 +14,7 @@ void showConsoleCursor(bool showFlag) //funkce z navodu, spousti se s parametrem
     SetConsoleCursorInfo(out, &cursorInfo);
 }
 
-int loadMatrix(chmat Omatrix, chmat Gmatrix, char* addr, int* ptr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty, addr je nazev souboru a ptr je adresa, do ktere vkladame canContinue z funkce main()
+int loadMatrix(chmat Omatrix, chmat Gmatrix, const char* addr, int* ptr) //Nahraje hraci pole ze souboru do matic. Omatrix drzi neprepsatelne hodnoty, Gmatrix drzi pevne i uzivatelske hodnoty, addr je nazev souboru a ptr je adresa, do ktere vkladame canContinue z funkce main()
 {
     char chr;
     int err;
@@ -195,7 +195,7 @@ int shouldBeColoured(int i, int j) //Oznacuje souradnice, ktere maji mit sachovn
     }
 }
 
-char* mergeaddr(const char* folderaddr, char* addr, char* ans) //spoji nazev souboru s adresarem, az pote se s adresou pracuje
+char* mergeaddr(const char* folderaddr, const char* addr, char* ans) //spoji nazev souboru s adresarem, az pote se s adresou pracuje
 {
     strcpy_s(ans, NAMELENGTH + 15, folderaddr);
     strcat_s(ans, NAMELENGTH + 15, addr);
