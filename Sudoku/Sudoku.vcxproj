@@ -140,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="gameFunctions.cpp" />
+    <ClCompile Include="generating.cpp" />
     <ClCompile Include="otherFunctions.cpp" />
     <ClCompile Include="Sudoku.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameFunctions.h" />
+    <ClInclude Include="generating.h" />
     <ClInclude Include="otherFunctions.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

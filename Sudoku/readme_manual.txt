@@ -7,10 +7,10 @@ Po spuštìní se zobratí hlavní menu. V hlavním menu se pohybujte smìrovými
 hru ukonèit, stiknìte escape. V menu se nacházejí následující možnosti (pozn. 
 možnosti oznaèené hvìzdièkou * se zobrazí, jen pokud existuje rozehraná hra):
 
--1)* Continue
+1)* Continue
     Vyberte tuto možnost, pokud si pøejete pokraèovat v rozehrané høe.
     
-0)* Save the current game
+2)* Save the current game
     Uloží rozehranou hru. Hry se ukládají pøes hlavní menu, z rozehrané hry se
     do menu dostanete stiskem klávesy escape. Po vybrání této možnosti bude
     program chtít, abyste zadali jméno uložené hry. Název volte libovolný,
@@ -19,18 +19,19 @@ možnosti oznaèené hvìzdièkou * se zobrazí, jen pokud existuje rozehraná hra):
     v adresáøi soubor s Vámi vybraným jménem. Tento soubor obsahuje Vámi
     uloženou hru. Soubor se nesmaže ani po ukonèení programu.
                  
-1) Start a new game
-    Výbìrem této možnosti se spustí nová hra uložená v souboru pojmenovaném
-    000.txt. Hru lze kdykoli úøerušit a uložit výše zmínìným postupem.
+3) Start a new game
+    Po zvolení této možnosti vyberte pomocí smìrových šipek obtížnost. Následnì
+    se vygeneruje pole podle Vámi zadané úrovnì obtížnosti. Hru lze kdykoli
+    pøerušit a uložit výše zmínìným postupem.
 
-2) Load a saved game
+4) Load a saved game
     Po zvolení této možnosti se zobrazí možnosti na spuštìní hry manuálním
     zadáním jejího názvu, nebo využít jednu z posledních uložených her. Pokud
     byste omylem zavøeli aplikaci, kde jste mìli rozehranou hru, bude uložená
     pod názvem Last exit-game cache. Žádná data tedy nebudou ztracena. Hry lze
     naèítat pouze z adresáøe Playgrounds.
 
-3) Create a new layout
+5) Create a new layout
     Tato možnost Vám umožní pøímo v konzoli vytváøet nové hrací pole. Pokud jste
     s hracím polem spokojeni, stisknìte klávesu escape. Zadejte název Vašeho
     nového hracího pole. Následnì se hrací pole uloží. Otevøít jej lze opìt

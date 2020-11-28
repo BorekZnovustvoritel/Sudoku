@@ -3,6 +3,7 @@
 #include <conio.h>
 #include "gameFunctions.h"
 #include "otherFunctions.h"
+#include "generating.h"
 
 //vypise Gmatrix, hodnoty shodne s Omatrix vybarvi zelene, hodnoty oznacene jako chybne (v Ematrix) podbarvi cervene, cast je prevzata z navodoveho souboru
 void printMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9])

@@ -4,6 +4,7 @@
 #include <string.h>
 #include "gameFunctions.h"
 #include "otherFunctions.h"
+#include "generating.h"
 
 typedef char chmat[9][9];
 
@@ -81,100 +82,103 @@ int main()
 
                 case 1: //Save the current game
                     { //tato zavorka je jen kvuli inicializaci promenne. Nesmi byt ve switch case
-                        int hasDupes = 0;
-                        system("cls");
-                        printf("Please, enter a name of this session. Maximal length is %d symbols.\n", NAMELENGTH);
-                        showConsoleCursor(TRUE);
-                        scanf_s("%s", name, NAMELENGTH + 1);
-                        showConsoleCursor(FALSE);
-                        mergeaddr(folderaddr, name, addr);
-                        savematrix(Omatrix, Gmatrix, addr);
-                        for (int i = 1; i < NAMENUM; i++) //zkoumame, jestli jemno neni jiz obsazene, pokud je, soubor se sice prepise, ale seznam ulozenych her neobsahuje duplikaty
+                    int hasDupes = 0; //promenna drzi hodnotu 1, pokud se nove vkladane jmeno v seznamu jiz vyskytuje
+                    system("cls");
+                    printf("Please, enter a name of this session. Maximal length is %d symbols.\n", NAMELENGTH);
+                    showConsoleCursor(TRUE);
+                    scanf_s("%s", name, NAMELENGTH + 1);
+                    showConsoleCursor(FALSE);
+                    mergeaddr(folderaddr, name, addr);
+                    savematrix(Omatrix, Gmatrix, addr);
+                    for (int i = 1; i < NAMENUM; i++) //zkoumame, jestli jemno neni jiz obsazene, pokud je, soubor se sice prepise, ale seznam ulozenych her neobsahuje duplikaty
+                    {
+                        if (strcmp(name, names[i]) == 0) //pokud jsou jmena stejna
                         {
-                            if (strcmp(name, names[i]) == 0) //pokud jsou jmena stejna
-                            {
-                                hasDupes = 1;
-                            }
+                            hasDupes = 1;
                         }
-                        if (!hasDupes)
-                        {
-                            for (int i = NAMENUM - 1; i > 1; i--) //posouvame ulozene nazvy o jeden dale
-                            {
-                                strcpy_s(names[i], NAMELENGTH + 1, names[i - 1]);
-                            }
-                            strcpy_s(names[1], NAMELENGTH + 1, name); //ulozime novy nazev na prvni pozici
-                        }
-                        FILE* data;
-                        if (!fopen_s(&data, "DATA\\DATA", "w")) //zapiseme vse do souboru
-                        {
-                            for (int i = 0; i < NAMENUM; i++)
-                            {
-                                fprintf(data, "%s\n", names[i]);
-                            }
-                            fclose(data);
-                        }
-                        break;
-
                     }
+                    if (!hasDupes)
+                    {
+                        for (int i = NAMENUM - 1; i > 1; i--) //posouvame ulozene nazvy o jeden dale
+                        {
+                            strcpy_s(names[i], NAMELENGTH + 1, names[i - 1]);
+                        }
+                        strcpy_s(names[1], NAMELENGTH + 1, name); //ulozime novy nazev na prvni pozici
+                    }
+                    FILE* data;
+                    if (!fopen_s(&data, "DATA\\DATA", "w")) //zapiseme vse do souboru
+                    {
+                        for (int i = 0; i < NAMENUM; i++)
+                        {
+                            fprintf(data, "%s\n", names[i]);
+                        }
+                        fclose(data);
+                        }
+                    }
+                    break;
 
                 case 2: //Start a new game
                     { //tato zavorka je jen kvuli inicializaci promenne. Nesmi byt ve switch case
-                        char addr2[] = "DATA\\000.txt"; //defaultni soubor
-                        system("cls");
-                        if (loadMatrix(Omatrix, Gmatrix, addr2, &canContinue) == 0)
-                        {
-                            play(Omatrix, Gmatrix, 1, &canContinue);
-                        }
-                        else
-                        {
-                            printf("Error: '%s' is missing.\nPress any key to continue.", addr2);
-                            getch();
-                            showConsoleCursor(FALSE);
-                        }
-                        break;
+                    int status = loadMatrix(Omatrix, Gmatrix, "DATA\\seed.txt", &canContinue); //podarilo se seed uspesne nacist? 0 = ano, -1 = spatny format, jine hodnoty = error
+                    if (status == -1)
+                    {
+                        printf("Critical Error, 'seed.txt' is corrupted.\nPress any key to continue.\n");
+                        getch();
                     }
+                    else if (status)
+                    {
+                        printf("Critical Error, 'seed.txt' is missing.\nPress any key to continue.\n");
+                    }
+                    else
+                    {
+                        system("cls");                        
+                        mixAndClone(Omatrix, Gmatrix, difficultyMenu());
+                        play(Omatrix, Gmatrix, 1, &canContinue);
+                    }
+                    }
+                    break;
 
                 case 3: //Load a saved game
                     { //tato zavorka je jen kvuli inicializaci promenne. Nesmi byt ve switch case
-                        system("cls");
-                        int option = loadGameMenu(names);
-                        switch (option)
+                    system("cls");
+                    int option = loadGameMenu(names);
+                    switch (option)
+                    {
+                    case 0: //vlastni pojmenovany soubor
+                        printf("\nEnter the name of the save file:\n");
+                        showConsoleCursor(TRUE);
+                        scanf_s("%s", name, NAMELENGTH + 1);
+                        mergeaddr(folderaddr, name, addr);
+                        break;
+                    case 1: //cache
+                        strcpy_s(name, NAMELENGTH + 1, names[0]);
+                        mergeaddr("DATA\\", name, addr);
+                        break;
+                    case -1: //esc, chceme pryc
+                        break;
+                    default: //vsechny ostatni soubory
+                        strcpy_s(name, NAMELENGTH + 1, names[option - 1]);
+                        mergeaddr(folderaddr, name, addr);
+                    }
+                    system("cls");
+                    if (option >= 0)
+                    {
+                        int status = loadMatrix(Omatrix, Gmatrix, addr, &canContinue);  //podarilo se hraci pole uspesne nacist? 0 = ano, -1 = spatny format, jine hodnoty = error
+                        if (status == 0)
                         {
-                        case 0: //vlastni pojmenovany soubor
-                            printf("\nEnter the name of the save file:\n");
-                            showConsoleCursor(TRUE);
-                            scanf_s("%s", name, NAMELENGTH + 1);
-                            mergeaddr(folderaddr, name, addr);
-                            break;
-                        case 1: //cache
-                            strcpy_s(name, NAMELENGTH + 1, names[0]);
-                            mergeaddr("DATA\\", name, addr);
-                            break;
-                        case -1: //esc, chceme pryc
-                            break;
-                        default: //vsechny ostatni soubory
-                            strcpy_s(name, NAMELENGTH + 1, names[option - 1]);
-                            mergeaddr(folderaddr, name, addr);
+                            play(Omatrix, Gmatrix, 1, &canContinue);
                         }
-                        system("cls");
-                        if (option >= 0)
+                        else if (status == 1)
                         {
-                            int status = loadMatrix(Omatrix, Gmatrix, addr, &canContinue);  //podarilo se hraci pole uspesne nacist? 0 = ano, -1 = spatny format, jine hodnoty = error
-                            if (status == 0)
-                            {
-                                play(Omatrix, Gmatrix, 1, &canContinue);
-                            }
-                            else if (status == 1)
-                            {
-                                printf("\nThe file '%s' is not formatted properly.\nPlease read the user's manual.\nPress any key to continue.", name);
-                                getch();
-                            }
-                            else
-                            {
-                                printf("\nThe file '%s' was not found.\nPress any key to continue.", name);
-                                getch();
-                            }
-                            showConsoleCursor(FALSE);
+                            printf("\nThe file '%s' is not formatted properly.\nPlease read the user's manual.\nPress any key to continue.", name);
+                            getch();
+                        }
+                        else
+                        {
+                            printf("\nThe file '%s' was not found.\nPress any key to continue.", name);
+                            getch();
+                        }
+                        showConsoleCursor(FALSE);
                         }
                     }
                     break;

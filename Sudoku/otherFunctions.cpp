@@ -3,6 +3,7 @@
 #include <conio.h>
 #include "gameFunctions.h"
 #include "otherFunctions.h"
+#include "generating.h"
 #include <ctype.h>
 
 void showConsoleCursor(bool showFlag) //funkce z navodu, spousti se s parametrem TRUE/FALSE
@@ -324,5 +325,61 @@ int loadGameMenu(char names[NAMENUM][NAMELENGTH + 1]) //Zobrazuje menu, ktere se
             }
         }
     }
+    return option;
+}
+
+int difficultyMenu()
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    WORD saved_attributes;
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+    char key;
+    int option = 1;
+    int leave = 0;
+    do
+    {
+        system("cls");
+        printf("Select your difficulty using arrows < >.\nConfirm with Enter\n\n");
+        printf("<");
+        for (int i = 0; i < option; i++)
+        {
+            SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY);
+            printf(" ");
+        }
+        SetConsoleTextAttribute(hConsole, saved_attributes);
+        for (int i = option; i < 10; i++)
+        {
+            printf(" ");
+        }
+        printf(">");
+        key = getch();
+        if (key == 0 || key == 0xE0) //zbaveni se prazdnych inputu
+        {
+            key = getch();
+        }
+        else
+        {
+            switch (key)
+            {
+            case 75: //left
+                if (option != 1)
+                {
+                    option--;
+                }
+                break;
+            case 77: //right
+                if (option != 10)
+                {
+                    option++;
+                }
+                break;
+            case 13: //enter                 
+                leave = 1;
+                break;
+            }
+        }
+    } while (!leave);
     return option;
 }

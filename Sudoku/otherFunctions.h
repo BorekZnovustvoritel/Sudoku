@@ -21,3 +21,4 @@ int shouldBeColoured(int i, int j); //Oznacuje souradnice, ktere maji mit sachov
 char* mergeaddr(const char* folderaddr, const char* addr, char* ans); //spoji nazev souboru s adresarem, az pote se s adresou pracuje
 int getQuickLoadMenuData(char names[NAMENUM][NAMELENGTH + 1]); //Otevre a extrahuje ulozena data ze souboru DATA\DATA
 int loadGameMenu(char names[NAMENUM][NAMELENGTH + 1]); //Zobrazuje menu, ktere se zobrazi po otevreni moznosti Load a saved game
+int difficultyMenu();
