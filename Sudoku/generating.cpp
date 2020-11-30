@@ -64,6 +64,7 @@ void puncture(chmat matrix, int difficulty)
 	int n;
 	int i = 0;
 	int Ematrix[9][9];
+	flushMatrix(Ematrix);
 	int attempts = 0;
 	printf("\nGenerating...\n");
 	while (i < (15 + difficulty * 4) && attempts < 1000000)
@@ -75,6 +76,7 @@ void puncture(chmat matrix, int difficulty)
 		{
 			int numOfFails = 0;
 			char buffer = matrix[m][n];
+			Ematrix[m][n] = 0;
 			for (char j = '1'; j <= '9'; j++) //pokud odebereme toto cislo, bude reseni jednoznacne?
 			{
 				matrix[m][n] = j;
@@ -110,7 +112,7 @@ void puncture(chmat matrix, int difficulty)
 				{
 					numOfFails++;
 				}
-				flushMatrix(Ematrix);
+				Ematrix[m][n] = 0;
 			}
 			if (numOfFails == 8) //ano, bude jednoznacne
 			{

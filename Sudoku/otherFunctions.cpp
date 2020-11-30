@@ -343,9 +343,9 @@ int difficultyMenu()
         system("cls");
         printf("Select your difficulty using arrows < >.\nConfirm with Enter\n\n");
         printf("<");
+        SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY);
         for (int i = 0; i < option; i++)
         {
-            SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY);
             printf(" ");
         }
         SetConsoleTextAttribute(hConsole, saved_attributes);
