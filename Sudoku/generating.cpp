@@ -3,11 +3,13 @@
 #include <conio.h>
 #include <string.h>
 #include "gameFunctions.h"
+#include "menuFunctions.h"
 #include "otherFunctions.h"
 #include "generating.h"
 #include <time.h>
 
-void mixRow(chmat matrix, int first, int second)
+
+void mixRow(chmat matrix, int first, int second) //zmena radku v jednom tripletu
 {
 	char buffer;
 	for (int n = 0; n < 9; n++)
@@ -18,7 +20,7 @@ void mixRow(chmat matrix, int first, int second)
 	}
 }
 
-void mixColumns(chmat matrix, int first, int second)
+void mixColumns(chmat matrix, int first, int second) //zmena sloupcu v jednom tripletu
 {
 	char buffer;
 	for (int m = 0; m < 9; m++)
@@ -29,10 +31,10 @@ void mixColumns(chmat matrix, int first, int second)
 	}
 }
 
-void swapNumbers(chmat matrix, char first, char second)
+void swapNumbers(chmat matrix, char first, char second) //zamena devitic cisel (1 <-> 2 apod.)
 {
-	int firstcoords[18];
-	int i = 0;
+	int firstcoords[18]; //bude drzet souradnice cisel, ktere chceme prohodit, souradnice drzime za sebou
+	int i = 0; //promenna, drzi akt. pozici pro zapis do tabulky souradnic
 	int secondcoords[18];
 	int j = 0;
 	for (int m = 0; m < 9; m++)
@@ -53,26 +55,25 @@ void swapNumbers(chmat matrix, char first, char second)
 	}
 	for (int i = 0; i < 18; i += 2)
 	{
-		matrix[secondcoords[i]][secondcoords[i + 1]] = first;
+		matrix[secondcoords[i]][secondcoords[i + 1]] = first; //prohozeni cisel
 		matrix[firstcoords[i]][firstcoords[i + 1]] = second;
 	}
 }
 
-void puncture(chmat matrix, int difficulty)
+void puncture(chmat matrix, int difficulty)  //derovani
 {
-	int m;
-	int n;
-	int i = 0;
-	int Ematrix[9][9];
+	int m, n; //souradnice pro derovani
+	int i = 0; //promenna, ktera urcuje, kolik der se ma udelat
+	int Ematrix[9][9]; //pro pouziti funkci na kontrolu hraciho pole
 	flushMatrix(Ematrix);
 	int attempts = 0;
 	printf("\nGenerating...\n");
-	while (i < (15 + difficulty * 4) && attempts < 1000000)
+	while (i < (15 + difficulty * 4) && attempts < MAX_ATTEMPTS) //kazdy obtiznostni bod prida 4 diry. 19 der je minimum. Pokud se dlouho nedari udelat dalsi diry, cyklus se ukonci
 	{
 		attempts++;
-		m = (rand() * 100) % 9;
-		n = (rand() * 100) % 9;
-		if (matrix[m][n] != '0')
+		m = rand() % 9;
+		n = rand() % 9;
+		if (matrix[m][n] != '0') //jen pokud uz neni vyderovano
 		{
 			int numOfFails = 0;
 			char buffer = matrix[m][n];
@@ -83,7 +84,7 @@ void puncture(chmat matrix, int difficulty)
 				checkRow(matrix, Ematrix, m);
 				checkColumn(matrix, Ematrix, n);
 				int startgridM, startgridN;
-				if(m<3) //prirazeni zacatku bunky
+				if(m<3) //prirazeni zacatku bunky pro funkci checkGrid
 				{
 					startgridM = 0;
 				}
@@ -118,24 +119,24 @@ void puncture(chmat matrix, int difficulty)
 			{
 				matrix[m][n] = '0';
 				i++; //vyderovanych mist
-				attempts = 0;
+				attempts = 0; //reset pocitadla pokusu
 			}
 			else //ne, nebude jednoznacne
 			{
-				matrix[m][n] = buffer;
+				matrix[m][n] = buffer; //vratime hodnotu
 			}
 		}
 	}
 }
 
-void mixAndClone(chmat Omatrix, chmat Gmatrix, int difficulty)
+void mixAndClone(chmat Omatrix, chmat Gmatrix, int difficulty) //funkce volajici vyse definovane funkce ve spravnem poradi
 {
 	srand(time(NULL));
 	int r, s, t, u;
 	for (int i = 0; i < 50; i++)
 	{
-		r = (rand() * 100) % 9; //cislo radku/sloupce
-		if (r == 2 || r == 5 || r == 8)
+		r = rand() % 9; //cislo radku/sloupce
+		if (r == 2 || r == 5 || r == 8) //r a s musi by ze stejneho tripletu
 		{
 			s = r - 2; //cislo radku/sloupce, se kterym se ma vymenit
 		}
@@ -146,10 +147,10 @@ void mixAndClone(chmat Omatrix, chmat Gmatrix, int difficulty)
 		mixRow(Omatrix, r, s);
 		mixColumns(Omatrix, r, s);
 		
-		t = 1 + (rand() * 100) % 9; //ktere cislo vymenime?
+		t = 1 + rand() % 9; //ktere cislo vymenime?
 		do
 		{
-			u = 1 + (rand() * 100) % 9; //s kterym?
+			u = 1 + rand() % 9; //s kterym?
 		} while (u == t);
 		swapNumbers(Omatrix, '0' + t, '0' + u);
 	}

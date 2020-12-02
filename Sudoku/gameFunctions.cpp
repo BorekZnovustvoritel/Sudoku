@@ -2,8 +2,19 @@
 #include <windows.h>
 #include <conio.h>
 #include "gameFunctions.h"
+#include "menuFunctions.h"
 #include "otherFunctions.h"
 #include "generating.h"
+
+
+void showConsoleCursor(bool showFlag) //funkce z navodu, spousti se s parametrem TRUE/FALSE
+{
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = showFlag;
+    SetConsoleCursorInfo(out, &cursorInfo);
+}
 
 //vypise Gmatrix, hodnoty shodne s Omatrix vybarvi zelene, hodnoty oznacene jako chybne (v Ematrix) podbarvi cervene, cast je prevzata z navodoveho souboru
 void printMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9])
@@ -71,14 +82,13 @@ void printMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9])
                 SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN); //oddelovace
                 printf("|");
             }
-
         }
         printf("\n");
     }
     SetConsoleTextAttribute(hConsole, saved_attributes); //resetovani konzole
 }
 
-void setCursorPosition(int x, int y) //Nastaveni kurzoru v konzoli na pozici x = sloupce, y = radky
+void setCursorPosition(int x, int y) //Nastaveni kurzoru v konzoli na pozici x = sloupce, y = radky, funkce z navodoveho souboru
 {
     static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     fflush(stdin);
@@ -86,41 +96,26 @@ void setCursorPosition(int x, int y) //Nastaveni kurzoru v konzoli na pozici x =
     SetConsoleCursorPosition(hOut, coord);
 }
 
-void printPoint(chmat Gmatrix, int* mActual, int* nActual) //funkce, ktera je hlavne volana v dalsi funkci, hlavni funkce je pocitani pozice kurzoru pro predchozi funkci
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-    WORD saved_attributes;
-
-    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
-    saved_attributes = consoleInfo.wAttributes;
-    setCursorPosition(*nActual * 2 + 2, *mActual + 1);
-    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-    fflush(stdin);
-
-    SetConsoleTextAttribute(hConsole, saved_attributes);
-}
-
-void moveNumber(chmat Gmatrix, char d, int* mActual, int* nActual) //funkce pro pohyb v hracim poli
+void move(char d, int* mActual, int* nActual) //funkce pro pohyb v hracim poli, funkce z navodoveho souboru, upravena
 {
     if (d == 'u' && *mActual - 1 >= 0) {
         (*mActual)--;
-        printPoint(Gmatrix, mActual, nActual);
+        setCursorPosition(*nActual * 2 + 2, *mActual + 1);
     }
 
     if (d == 'd' && *mActual + 1 < 9) {
         (*mActual)++;
-        printPoint(Gmatrix, mActual, nActual);
+        setCursorPosition(*nActual * 2 + 2, *mActual + 1);
     }
 
     if (d == 'l' && *nActual - 1 >= 0) {
         (*nActual)--;
-        printPoint(Gmatrix, mActual, nActual);
+        setCursorPosition(*nActual * 2 + 2, *mActual + 1);
     }
 
     if (d == 'r' && *nActual + 1 < 9) {
         (*nActual)++;
-        printPoint(Gmatrix, mActual, nActual);
+        setCursorPosition(*nActual * 2 + 2, *mActual + 1);
     }
 }
 
@@ -151,23 +146,12 @@ void checkAndPrintMatrix(chmat Omatrix, chmat Gmatrix, int Ematrix[9][9], int mA
     setCursorPosition(nActual * 2 + 2, mActual + 1);
 }
 
-void printMenu(char* row, unsigned int rownum, int canContinue) //zobrazi hlavni menu podle parametru. row[] obsahuje kurzor ukazujici aktivni radek, rownum obsahuje cislo radku (zacinajici od nuly)
-{
-    system("cls");
-    printf("\n\tSUDOKU\n\n");
-    if (canContinue == 1)
-    {
-        printf("\t%c Continue\n\t%c Save the current game\n", row[0], row[1]);
-    }
-    printf("\t%c Start a new game\n\t%c Load a saved game\n\t%c Create a new layout\n\t%c Exit", row[2], row[3], row[4], row[5]);
-}
-
 int play(chmat Omatrix, chmat Gmatrix, int gamemode, int* ptr) //Herni mechanismus. Omatrix je reference, Gmatrix se zobrazuje. Pri vytvareni layoutu se funkce vola s gamemode hodnotou == 2, cast je prevzata z navodu
 {
     int mActual = 0, nActual = 0; //ulozeni souradnic aktualniho prvku pro pouziti ve funkcich
     int Ematrix[9][9]; //Ematrix -E jako error, uklada chybne radky, sloupce a podmatice podle pravidel hry. Ty se pak podbarvuji cervene
     unsigned int key; //nahrava se do nej hodnota stisknute klavesy
-    char direction; //vyuziva jej funkce moveNumber
+    char direction; //vyuziva jej funkce move
     showConsoleCursor(TRUE);
     checkAndPrintMatrix(Omatrix, Gmatrix, Ematrix, mActual, nActual);
     while (getvictory(Gmatrix, Ematrix) != 1) //dokud neni hra vyhrana
@@ -186,22 +170,22 @@ int play(chmat Omatrix, chmat Gmatrix, int gamemode, int* ptr) //Herni mechanism
         case 72:
             //klavesa UP
             direction = 'u';
-            moveNumber(Gmatrix, direction, &mActual, &nActual);
+            move(direction, &mActual, &nActual);
             break;
         case 80:
             //klavesa DOWN
             direction = 'd';
-            moveNumber(Gmatrix, direction, &mActual, &nActual);
+            move(direction, &mActual, &nActual);
             break;
         case 75:
             //klavesa LEFT
             direction = 'l';
-            moveNumber(Gmatrix, direction, &mActual, &nActual);
+            move(direction, &mActual, &nActual);
             break;
         case 77:
             //klavesa RIGHT
             direction = 'r';
-            moveNumber(Gmatrix, direction, &mActual, &nActual);
+            move(direction, &mActual, &nActual);
             break;
         case 8:
             //klavesa Backspace, da se pomoci ni mazat (Ale stejnou funkci ma i '0')

@@ -23,6 +23,9 @@
     <ClCompile Include="generating.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menuFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -35,6 +38,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generating.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menuFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
